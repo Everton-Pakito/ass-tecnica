@@ -1,4 +1,28 @@
-<!DOCTYPE html>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-logo">🔧</div>
+        <div class="splash-text">Assist Técnica</div>
+        <div class="splash-subtitle">Carregando sistema...</div>
+    </div>
+
+    <!-- Indicador Offline -->
+    <div id="offline-indicator" class="offline-indicator">
+        📵 Você está offline - Algumas funcionalidades podem estar limitadas
+    </div>
+
+    <!-- Notificação de Instalação -->
+    <div id="install-notification" class="install-notification hidden">
+        <strong>✅ App Instalado com Sucesso!</strong><br>
+        <small>Agora você pode usar o sistema offline</small>
+    </div>
+
+    <!-- Botão de Instalação PWA -->
+    <div id="install-prompt" class="install-prompt hidden">
+        <button id="install-btn" class="install-btn">
+            📱 Instalar App
+        </button>
+    </div><!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6,11 +30,22 @@
     <title>Assistência Técnica - Sistema de Gestão</title>
     
     <!-- PWA Meta Tags -->
+    <meta name="description" content="Sistema completo de gestão de assistência técnica para motoristas, técnicos e supervisores">
     <meta name="theme-color" content="#3498db">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="manifest" href="data:application/json,{%22name%22:%22Assistência%20Técnica%22,%22short_name%22:%22AssistTec%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23667eea%22,%22theme_color%22:%22%233498db%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%233498db'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='20' fill='white' text-anchor='middle'%3EAT%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]}">
+    <meta name="apple-mobile-web-app-title" content="Assist Técnica">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNpc3RlbWEgZGUgQXNzaXN0w6puY2lhIFTDqWNuaWNhIiwKICAic2hvcnRfbmFtZSI6ICJBc3Npc3QgVMOpY25pY2EiLAogICJkZXNjcmlwdGlvbiI6ICJTaXN0ZW1hIGNvbXBsZXRvIGRlIGdlc3TDo28gZGUgYXNzaXN0w6puY2lhIHTDqWNuaWNhIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzY2N2VlYSIsCiAgInRoZW1lX2NvbG9yIjogIiMzNDk4ZGIiLAogICJsYW5nIjogInB0LUJSIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M00yNXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXhNREFnTVRBd0lqNEtQSE5sWVdOb0lIaDRQU0l3SWlCNVdUMGlNQ0lnZUQxaU1UQWlJSGxjUFNJNE1DSWdabWxzZEQwaWJtOXVaU0lnWm1sa2JHVnRjejBpYVc1bGNtRnlVbGRHVEc5M1VHRnpjeUlnWm1sc2RHVnlVVzVwZEhNZ0ltOWlhbVZqZEVKdmRXNWthVzVuUW05NElpQnZjR0ZqYVhSNVBTSXVNU0krUEdGdWFXMWhkR1ZVY21GdWMyWnZjbTBnWVhSMGNtbGlkWFJsVG1GdFpUMGlkSEpoYm5ObWIzSnRJaUIwZVhCbFBTSnNhVzVsWVhJaUlIWmhiSFZsY3owaVFtRnpaVHNnTUNBZ01EczJNakUwT0Rxa2MzUnlhV2xqVmlRZ2NtVndaV0YwUTI5MWJuUTlJbWx1WkdWbWFXNXBkR1VpUGlCV0ptRnRjRHNnU1NadmJteHBibVVnTnpSd2VEc2dReVp3YkdGalpUc3hNVEI2ZVNCVmVDWnlaV2RwY0M5NEwzaDBNall1TURBU04wUkdiMjVwVG1sdWRXTXZSMjl2WjJ4bFZGUkdVRWRDZEZSTldGaE1jV0oxTDFWUU1WQnVhWFE1UldwSE1XRjNVVkEwWkdoVWRHUkNVa0psZVVrNGNWTlNNamhXU1dSUWFHWmhWVGQzWlZaNlJsVmFUamhRZVVGblVGVllRMlUwT0ZCNWNUSTJaV2RsY0VWYVQxQkRlalFySzNGb1dFdDVibXRWVDFaRGVuQTJhVUZhVmxkSGFsRXdWazR3ZEV0aWMwTkJUamhKVVZwWVQzRXdiR001VFVkdFpubzBjbWRKYTNkTE9VcFROa0ZpVFVGaFdVdDBSMk5YVGtOamNEVTNia3R3VjFkWWVITTVSMU5DUW14MFgzRmthblpEU2t4Q05FUkVkWFZYWkVkTVEzUmljbEZOVnpRMWNXbDNXRWQ2TmpKNGRtdE1PVkJIYUZoRGEyUXhkRzB4ZUVkMFJ6UjRZMnBwVWxFd1RtWkRjR3RvT0VsU1JqWmhUbTU1VEZsVmNqZGpTRE0xU1UxdVQyVkRkbE5JTTA4M0wwTkZTMU53ZUUxcGNsUlZlV3MxUFNsY1BDOWhibWx0WVhSbFZISmhibk5tYjNKdFBnbzhZMmx5WTJ4bElITjBjbTlyWlQwaWJtOXVaU0lnWm1sc2JEMGlJek0wT1RobVl5SWdjakQwaU5EVWlJQzgrUEM5amFYSmpiR1UrQ2lBZ1BERDJIQ0JqZUQxaU5UQWlJR041UFNJMk1USWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpSUdac2JHdzlJbmRvYVhSbElpQm1iMjUwTFdaaGJXbHNlVDBpUVhKcFlXd3NJRzF2Ym05emNHRmpaU0lnWm05dWRDMXphWHBsUFNJeU5IQjRJaUJtYjI1MExYZGxhV2RvZEQwaVltOXNaQ0krUVZSY1BDOTBaWGgwUGdvZ1BIUnBlSFI0SUhnOUlqVXdJaUI1UFNJNk1DSWdabTl1ZEMxbVlXMXBiSGs5SWtGeWFXRnNJaUJtYjI1MExYTnBlbVU5SW0xdmJtOXpjR0ZqWlNJZ1ptbHNiRDBpZDJocGRHVWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpUGxSSVBDOTBaWGgwUGdvZ1BIUmxlSFFnZUQwaU5UQWlJSGs5SWprd0lrQWdabTl1ZEMxbVlXMXBiSGs5SWtGeWFXRnNJaUJtYjI1MExYTnBlbVU5SWpGd2VDSWdabWxzYkQwaWQyaHBkR1VpSUhSbGVIUXRZVzVqYUc5eVBTSnRhV1JrYkdVaVBrZGxjM1JoYnpBOElrQWdRM2x0YTNWS1pIYzVNamhpUEM5MFpYaDBQZ28rQ25FaFlXTHpRMnVRSWlCemVpMVF6U3FpVUFaSUVGKzhJMVVyTGVwVE81bXU3TkQ5eWMyVVNna0hHQkFvaVFHWlFLVjJDUUFpV2x1NkRhcE1lVHBaZmFEeStiTTBacDU5eUNEdjNBQUE9PSIsCiAgICAgICJzaXplcyI6ICIxNzJ4MTcyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIsCiAgICAgICJwdXJwb3NlIjogImFueSIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M00yNXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXhNREFnTVRBd0lqNEtQSE5sWVdOb0lIaDRQU0l3SWlCNVdUMGlNQ0lnZUQxaU1UQWlJSGxjUFNJNE1DSWdabWxzZEQwaWJtOXVaU0lnWm1sa2JHVnRjejBpYVc1bGNtRnlVbGRHVEc5M1VHRnpjeUlnWm1sc2RHVnlVVzVwZEhNZ0ltOWlhbVZqZEVKdmRXNWthVzVuUW05NElpQnZjR0ZqYVhSNVBTSXVNU0krUEdGdWFXMWhkR1ZVY21GdWMyWnZjbTBnWVhSMGNtbGlkWFJsVG1GdFpUMGlkSEpoYm5ObWIzSnRJaUIwZVhCbFBTSnNhVzVsWVhJaUlIWmhiSFZsY3owaVFtRnpaVHNnTUNBZ01EczJNakUwT0Rxa2MzUnlhV2xqVmlRZ2NtVndaV0YwUTI5MWJuUTlJbWx1WkdWbWFXNXBkR1VpUGlCV0ptRnRjRHNnU1NadmJteHBibVVnTnpSd2VEc2dReVp3YkdGalpUc3hNVEI2ZVNCVmVDWnlaV2RwY0M5NEwzaDBNall1TURBU04wUkdiMjVwVG1sdWRXTXZSMjl2WjJ4bFZGUkdVRWRDZEZSTlhGaE1jV0oxTDFWUU1WQnVhWFE1UldwSE1XRjNVVkEwWkdoVWRHUkNVa0psZVVrNGNWTlNNamhXU1dSUWFHWmhWVGQzWlZaNlJsVmFUamhRZVVGblVGVllRMlUwT0ZCNWNUSTJaV2RsY0VWYVQxQkRlalFySzNGb1dFdDVibXRWVDFaRGVuQTJhVUZhVmxkSGFsRXdWazR3ZEV0aWMwTkJUamhKVVZwWVQzRXdiR001VFVkdFpubzBjbWRKYTNkTE9VcFROa0ZpVFVGaFdVdDBSMk5YVGtOamNEVTNia3R3VjFkWWVITTVSMU5DUW14MFgzRmthblpEU2t4Q05FUkVkWFZYWkVkTVEzUmljbEZOVnpRMWNXbDNXRWQ2TmpKNGRtdE1PVkJIYUZoRGEyUXhkRzB4ZUVkMFJ6UjRZMnBwVWxFd1RtWkRjR3RvT0VsU1JqWmhUbTU1VEZsVmNqZGpTRE0xU1UxdVQyVkRkbE5JTTE4M0wwTkZTMU53ZUUxcGNsUlZlV3MxUFNsY1BDOWhibWx0WVhSbFZISmhibk5tYjNKdFBnbzhZMmx5WTJ4bElITjBjbTlyWlQwaWJtOXVaU0lnWm1sc2JEMGlJek0wT1RobVl5SWdjakEwaU5EVWlJQzgrUEM5amFYSmpiR1UrQ2lBZ1BEUjJJQ040UFNJMU1DSWdZejA5YzJVaUlHWnZiblF0Wm1GdGFXeDVQU0pCY21saGJDb2diVzl1YjNOd1lXTmxJaUJtYjI1MExYTnBlbVU5SWpJMGNIZ2lJR1pwYkd3OUluZG9hWFJsSWlCbWIyNTBMWGRsYVdkb2REMGlZbTlzWkNJK1FWUmNQQzkyWGdsY1BDOTBaWGgwUGdvZ1BIUmxlSFFnZUQwaU5UQWlJSGs5SWprd0ltQWdabTl1ZEMxbVlXMXBiSGs5SWtGeWFXRnNJaUJtYjI1MExYTnBlbVU5SWpGd2VDSWdabWxzYkQwaWQyaHBkR1VpSUhSbGVIUXRZVzVqYUc5eVBTSnRhV1JrYkdVaVBrZGxjM1JoYnpBOElrQXhRM2x0YTNWS1pIYzVNamhpUEM5MFpYaDBQZ29nUER3dGMzWm5JQzgrQ2lBZ1BHTnBjbU5zWlNCamVEMGlOVEFpSUdONVBTSTFNQ0lnY2owaU1qQWlJR1pwYkd3OUlpTTJOamRsWldFaVBqd3ZZMmx5WTJ4bFBnbzhMUzF6ZG1jZ0xTNCtDaUFnSUNBZ1BDOXphbWNNSjJ3Z2JXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M00yNHZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXhNREFpSUdobGFXZG9kRDBpTVRBd0lqNE5MeUJIUzA5bGNpSmFzTlJYTldBU2l2SmtOU0RLTWFFWUlFQlh6K01RdHRxY0YxalB2U0RURG1iWmNtcnNNaE9QeTVkYkNqUGd4Q0VQN2dEOUFBQT09IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIgogICAgfQogIF0sCiAgImNhdGVnb3JpZXMiOiBbImJ1c2luZXNzIiwgInByb2R1Y3Rpdml0eSIsICJ1dGlsaXRpZXMiXSwKICAic2hvcnRjdXRzIjogWwogICAgewogICAgICAibmFtZSI6ICJOb3ZhIFNvbGljaXRhw6fDo28iLAogICAgICAic2hvcnRfbmFtZSI6ICJOb3ZhIiwKICAgICAgImRlc2NyaXB0aW9uIjogIkNyaWFyIG5vdmEgc29saWNpdGHDp8Ojb2RlIGFzc2lzdMOqbmNpYSIsCiAgICAgICJ1cmwiOiAiLj90YWI9bW90b3Jpc3RhIiwKICAgICAgImljb25zIjogW10KICAgIH0sCiAgICB7CiAgICAgICJuYW1lIjogIsOBcmVhIGRvIFTDqWNuaWNvIiwKICAgICAgInNob3J0X25hbWUiOiAiVMOpY25pY28iLAogICAgICAiZGVzY3JpcHRpb24iOiAiQWNlc3NhciDDoXJlYSBkbyB0w6ljbmljbyIsCiAgICAgICJ1cmwiOiAiLj90YWI9dGVjbmljbyIsCiAgICAgICJpY29ucyI6IFtdCiAgICB9LAogICAgewogICAgICAibmFtZSI6ICJEYXNoYm9hcmQiLAogICAgICAic2hvcnRfbmFtZSI6ICJEYXNoIiwKICAgICAgImRlc2NyaXB0aW9uIjogIlZpc3VhbGl6YXIgZGFzaGJvYXJkIGRlIHN1cGVydmlzw6NvIiwKICAgICAgInVybCI6ICIuP3RhYj1zdXBlcnZpc2FvIiwKICAgICAgImljb25zIjogW10KICAgIH0KICBdLAogICJzdGFydF91cmwiOiAiLiIsCiAgInByb3RvY29sX2hhbmRsZXJzIjogW10sCiAgImVkaXRfc2NvcGUiOiBbIi4iXQp9">
+    
+    <!-- Ícones para diferentes plataformas -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle fill='%23667eea' r='45' cx='50' cy='50'/%3E%3Ctext x='50' y='61' font-family='Arial,monospace' font-size='24px' fill='white' text-anchor='middle' font-weight='bold'%3EAT%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle fill='%23667eea' r='45' cx='50' cy='50'/%3E%3Ctext x='50' y='61' font-family='Arial,monospace' font-size='24px' fill='white' text-anchor='middle' font-weight='bold'%3EAT%3C/text%3E%3C/svg%3E">
+    
+    <!-- Favicon tradicional -->
+    <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle fill='%23667eea' r='45' cx='50' cy='50'/%3E%3Ctext x='50' y='61' font-family='Arial,monospace' font-size='24px' fill='white' text-anchor='middle' font-weight='bold'%3EAT%3C/text%3E%3C/svg%3E">>
     
     <style>
         /* CSS Base do Sistema */
@@ -326,8 +361,156 @@
             transition: all 0.3s ease;
         }
 
-        .logout-btn:hover {
-            background: #c82333;
+        /* Botão de instalação PWA */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001;
+            animation: pulse 2s infinite;
+        }
+
+        .install-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(39, 174, 96, 0.4);
+        }
+
+        .install-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Animação de instalação */
+        @keyframes installSuccess {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .installing {
+            animation: installSuccess 1s ease-in-out;
+        }
+
+        /* Notificação de instalação */
+        .install-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
+            z-index: 1002;
+            animation: slideInRight 0.5s ease-out;
+            max-width: 300px;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .notification-hide {
+            animation: slideOutRight 0.5s ease-in forwards;
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Indicador offline */
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #e74c3c;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            z-index: 1003;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .offline-indicator.show {
+            transform: translateY(0);
+        }
+
+        /* Splash screen personalizada */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+        }
+
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .splash-text {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .splash-subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        /* PWA específico - esconder elementos do navegador */
+        @media (display-mode: standalone) {
+            .install-prompt {
+                display: none !important;
+            }
+            
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
         }
 
         /* Cards de ocorrências */
@@ -643,8 +826,15 @@
             'admin': { senha: '123456', tipo: 'supervisor', nome: 'Administrador' }
         };
 
+        // PWA - Variables
+        let deferredPrompt = null;
+        let isInstalled = false;
+
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar splash screen por 2 segundos
+            setTimeout(hideSplashScreen, 2000);
+            
             preencherDadosAutomaticos();
             obterLocalizacao();
             configurarEventos();
@@ -655,7 +845,249 @@
             const hoje = new Date().toISOString().split('T')[0];
             document.getElementById('filtro-data-inicial').value = hoje;
             document.getElementById('filtro-data-final').value = hoje;
+
+            // Inicializar PWA
+            initializePWA();
+            
+            // Verificar status online/offline
+            updateOnlineStatus();
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            
+            // Verificar se foi aberto via URL parameters
+            checkURLParameters();
         });
+
+        // Esconder splash screen
+        function hideSplashScreen() {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 500);
+        }
+
+        // Inicializar PWA
+        function initializePWA() {
+            // Verificar se já está instalado
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                isInstalled = true;
+                return;
+            }
+
+            // Service Worker
+            if ('serviceWorker' in navigator) {
+                registerServiceWorker();
+            }
+
+            // Install prompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallPrompt();
+            });
+
+            // Verificar se foi instalado
+            window.addEventListener('appinstalled', () => {
+                hideInstallPrompt();
+                showInstallNotification();
+                isInstalled = true;
+            });
+        }
+
+        // Registrar Service Worker
+        function registerServiceWorker() {
+            const swCode = `
+                const CACHE_NAME = 'assist-tecnica-v1';
+                const urlsToCache = [
+                    './',
+                    './index.html'
+                ];
+
+                self.addEventListener('install', (event) => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then((cache) => cache.addAll(urlsToCache))
+                    );
+                });
+
+                self.addEventListener('fetch', (event) => {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then((response) => {
+                                if (response) {
+                                    return response;
+                                }
+                                return fetch(event.request);
+                            }
+                        )
+                    );
+                });
+
+                self.addEventListener('activate', (event) => {
+                    event.waitUntil(
+                        caches.keys().then((cacheNames) => {
+                            return Promise.all(
+                                cacheNames.map((cacheName) => {
+                                    if (cacheName !== CACHE_NAME) {
+                                        return caches.delete(cacheName);
+                                    }
+                                })
+                            );
+                        })
+                    );
+                });
+            `;
+
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+
+            navigator.serviceWorker.register(swUrl)
+                .then((registration) => {
+                    console.log('Service Worker registrado com sucesso:', registration.scope);
+                })
+                .catch((error) => {
+                    console.log('Falha ao registrar Service Worker:', error);
+                });
+        }
+
+        // Mostrar prompt de instalação
+        function showInstallPrompt() {
+            const installPrompt = document.getElementById('install-prompt');
+            const installBtn = document.getElementById('install-btn');
+            
+            installPrompt.classList.remove('hidden');
+            
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    installBtn.classList.add('installing');
+                    
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    
+                    if (outcome === 'accepted') {
+                        console.log('PWA instalado pelo usuário');
+                    } else {
+                        console.log('PWA rejeitado pelo usuário');
+                        installBtn.classList.remove('installing');
+                    }
+                    
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        // Esconder prompt de instalação
+        function hideInstallPrompt() {
+            const installPrompt = document.getElementById('install-prompt');
+            installPrompt.style.animation = 'slideOutRight 0.5s ease-in forwards';
+            setTimeout(() => {
+                installPrompt.classList.add('hidden');
+            }, 500);
+        }
+
+        // Mostrar notificação de instalação
+        function showInstallNotification() {
+            const notification = document.getElementById('install-notification');
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('notification-hide');
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                    notification.classList.remove('notification-hide');
+                }, 500);
+            }, 3000);
+        }
+
+        // Atualizar status online/offline
+        function updateOnlineStatus() {
+            const indicator = document.getElementById('offline-indicator');
+            if (navigator.onLine) {
+                indicator.classList.remove('show');
+            } else {
+                indicator.classList.add('show');
+            }
+        }
+
+        // Verificar parâmetros da URL
+        function checkURLParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            
+            if (tab) {
+                // Delay para garantir que o DOM esteja pronto
+                setTimeout(() => {
+                    showApp(tab);
+                }, 100);
+            }
+        }
+
+        // Compartilhar (Web Share API)
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Sistema de Assistência Técnica',
+                    text: 'Sistema completo de gestão de assistência técnica',
+                    url: window.location.href
+                }).then(() => {
+                    console.log('Compartilhamento realizado com sucesso');
+                }).catch((error) => {
+                    console.log('Erro ao compartilhar:', error);
+                });
+            } else {
+                // Fallback para navegadores sem suporte
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        alert('Link copiado para a área de transferência!');
+                    });
+                } else {
+                    prompt('Copie o link:', window.location.href);
+                }
+            }
+        }
+
+        // Salvar dados offline (localStorage como backup)
+        function salvarDadosOffline() {
+            try {
+                const dados = {
+                    ocorrencias: ocorrencias,
+                    contadorId: contadorId,
+                    usuarioLogado: usuarioLogado,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem('assist-tecnica-dados', JSON.stringify(dados));
+            } catch (error) {
+                console.log('Erro ao salvar dados offline:', error);
+            }
+        }
+
+        // Carregar dados offline
+        function carregarDadosOffline() {
+            try {
+                const dados = localStorage.getItem('assist-tecnica-dados');
+                if (dados) {
+                    const dadosParsed = JSON.parse(dados);
+                    ocorrencias = dadosParsed.ocorrencias || [];
+                    contadorId = dadosParsed.contadorId || 1;
+                    
+                    // Só restaurar usuário logado se foi salvo recentemente (menos de 24h)
+                    const timestamp = new Date(dadosParsed.timestamp);
+                    const agora = new Date();
+                    const diffHoras = (agora - timestamp) / (1000 * 60 * 60);
+                    
+                    if (diffHoras < 24 && dadosParsed.usuarioLogado) {
+                        usuarioLogado = dadosParsed.usuarioLogado;
+                        atualizarInterfaceLogin();
+                    }
+                    
+                    return true;
+                }
+            } catch (error) {
+                console.log('Erro ao carregar dados offline:', error);
+            }
+            return false;
+        }
 
         // Preenchimento automático de campos
         function preencherDadosAutomaticos() {
@@ -880,13 +1312,28 @@
 
             ocorrencias.push(novaOcorrencia);
             
-            alert('Solicitação enviada com sucesso!');
+            // Salvar offline
+            salvarDadosOffline();
             
-            // Limpar formulário e gerar novo ID
-            document.getElementById('form-motorista').reset();
-            contadorId++;
-            preencherDadosAutomaticos();
-            obterLocalizacao();
+            // Feedback visual melhorado
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Enviando...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = '🎉 Solicitação Enviada!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    
+                    // Limpar formulário e gerar novo ID
+                    document.getElementById('form-motorista').reset();
+                    contadorId++;
+                    preencherDadosAutomaticos();
+                    obterLocalizacao();
+                }, 1500);
+            }, 1000);
         }
 
         // Atualizar lista do técnico
@@ -919,6 +1366,11 @@
                         <button class="btn btn-primary" onclick="abrirAtendimento('${ocorrencia.id}')">
                             ${ocorrencia.status === 'Pendente' ? '▶️ Iniciar Atendimento' : '✏️ Editar Atendimento'}
                         </button>
+                        ${ocorrencia.status === 'Concluída' ? '' : `
+                            <button class="btn btn-success" onclick="finalizarRapido('${ocorrencia.id}')" style="margin-left: 10px;">
+                                ⚡ Finalizar Rápido
+                            </button>
+                        `}
                     </div>
                 `;
                 lista.appendChild(card);
@@ -936,10 +1388,30 @@
             }
         }
 
-        // Fechar modal
-        function fecharModal() {
-            document.getElementById('modal-atendimento').classList.add('hidden');
-            ocorrenciaAtual = null;
+        // Finalizar rapidamente sem modal
+        function finalizarRapido(id) {
+            const ocorrencia = ocorrencias.find(o => o.id === id);
+            if (ocorrencia && confirm('Finalizar esta ocorrência como concluída?')) {
+                ocorrencia.status = 'Concluída';
+                ocorrencia.observacoesTecnico = 'Atendimento finalizado rapidamente pelo técnico';
+                ocorrencia.dataAtendimento = new Date().toISOString();
+                
+                salvarDadosOffline();
+                atualizarTecnico();
+                atualizarDashboard();
+                
+                // Feedback visual
+                const notification = document.createElement('div');
+                notification.className = 'install-notification';
+                notification.innerHTML = `<strong>✅ ${id} Finalizada!</strong>`;
+                notification.style.top = '80px';
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.add('notification-hide');
+                    setTimeout(() => document.body.removeChild(notification), 500);
+                }, 2000);
+            }
         }
 
         // Salvar atendimento
@@ -949,10 +1421,23 @@
                 ocorrenciaAtual.observacoesTecnico = document.getElementById('observacoes-tecnico').value;
                 ocorrenciaAtual.dataAtendimento = new Date().toISOString();
                 
-                alert('Atendimento salvo com sucesso!');
-                fecharModal();
-                atualizarTecnico();
-                atualizarDashboard();
+                // Salvar offline
+                salvarDadosOffline();
+                
+                // Feedback visual melhorado
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Salvando...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerHTML = '🎉 Salvo!';
+                    setTimeout(() => {
+                        fecharModal();
+                        atualizarTecnico();
+                        atualizarDashboard();
+                    }, 1000);
+                }, 500);
             }
         }
 
