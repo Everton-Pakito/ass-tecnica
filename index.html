@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistência Técnica - Sistema de Gestão</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3498db">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="data:application/json,{%22name%22:%22Assistência%20Técnica%22,%22short_name%22:%22AssistTec%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23667eea%22,%22theme_color%22:%22%233498db%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%233498db'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='20' fill='white' text-anchor='middle'%3EAT%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]}">
+    
+    <style>
+        /* CSS Base do Sistema */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input:read-only {
+            background: #f8f9fa !important;
+            color: #6c757d;
+            cursor: not-allowed;
+            border-color: #dee2e6;
+        }
+
+        input:read-only:focus {
+            border-color: #dee2e6;
+            box-shadow: none;
+            transform: none;
+            background: #f8f9fa !important;
+        }
+
+        input, select, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        /* Navegação entre apps */
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+            gap: 5px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #6c757d;
+            position: relative;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .nav-tab.locked {
+            color: #dc3545;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .nav-tab.locked::after {
+            content: '🔒';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Modal de Login */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-header h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .login-form .input-group {
+            margin-bottom: 20px;
+        }
+
+        .login-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .user-info.show {
+            display: flex;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        /* Cards de ocorrências */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status.pendente { background: #f39c12; color: white; }
+        .status.andamento { background: #3498db; color: white; }
+        .status.concluida { background: #27ae60; color: white; }
+
+        .hidden { display: none; }
+
+        /* Dashboard BI */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header h1 { font-size: 2rem; }
+            .content { padding: 20px; }
+            .section { padding: 20px; }
+            .form-group { grid-template-columns: 1fr; }
+            .nav-tabs { flex-direction: column; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Sistema de Assistência Técnica</h1>
+            <p>Gestão completa de ocorrências técnicas</p>
+            
+            <!-- Informações do usuário logado -->
+            <div class="user-info" id="user-info">
+                <span id="user-name">Usuário</span>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Navegação -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showApp('motorista')">🚛 Motorista</button>
+                <button class="nav-tab locked" id="tab-tecnico" onclick="showApp('tecnico')">🔧 Técnico</button>
+                <button class="nav-tab locked" id="tab-supervisao" onclick="showApp('supervisao')">📊 Supervisão</button>
+            </div>
+
+            <!-- App Motorista -->
+            <div id="app-motorista" class="app-content">
+                <div class="section">
+                    <h2>📝 Nova Solicitação de Assistência</h2>
+                    <form id="form-motorista">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>ID da Ocorrência</label>
+                                <input type="text" id="id-ocorrencia" readonly style="background: #f8f9fa; color: #6c757d; cursor: not-allowed;">
+                            </div>
+                            <div class="input-group">
+                                <label>Data/Hora</label>
+                                <input type="text" id="data-hora" readonly style="background: #f8f9fa; color: #6c757d; cursor: not-allowed;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Localização</label>
+                                <input type="text" id="localizacao" readonly placeholder="Obtendo localização...">
+                                <button type="button" class="btn btn-warning" onclick="obterLocalizacao()" style="margin-top: 10px;">
+                                    📍 Atualizar Localização
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Frota</label>
+                                <input type="number" id="frota" required placeholder="Ex: 1001">
+                            </div>
+                            <div class="input-group">
+                                <label>Carreta 1</label>
+                                <input type="text" id="carreta1" placeholder="Ex: ABC-1234">
+                            </div>
+                            <div class="input-group">
+                                <label>Carreta 2</label>
+                                <input type="text" id="carreta2" placeholder="Ex: DEF-5678">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Solicitante</label>
+                                <input type="text" id="solicitante" required pattern="[A-Za-zÀ-ÿ\s]+" placeholder="Nome completo">
+                            </div>
+                            <div class="input-group">
+                                <label>Tipo de Assistência</label>
+                                <select id="tipo" required>
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="Borracharia">Borracharia</option>
+                                    <option value="Eletrica">Elétrica</option>
+                                    <option value="Mecanica">Mecânica</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Descrição do Problema</label>
+                                <textarea id="descricao" rows="4" required placeholder="Descreva detalhadamente o problema..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            📤 Enviar Solicitação
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- App Técnico -->
+            <div id="app-tecnico" class="app-content hidden">
+                <div class="section">
+                    <h2>🔧 Ocorrências Disponíveis</h2>
+                    <div id="lista-ocorrencias">
+                        <!-- Lista será preenchida dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Modal de Atendimento -->
+                <div id="modal-atendimento" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+                    <div class="section" style="margin: 0; max-width: 500px; width: 90%;">
+                        <h2>Atender Ocorrência</h2>
+                        <form id="form-atendimento">
+                            <div class="input-group">
+                                <label>Status</label>
+                                <select id="status-atendimento">
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Observações do Técnico</label>
+                                <textarea id="observacoes-tecnico" rows="4" placeholder="Descreva o atendimento realizado..."></textarea>
+                            </div>
+                            <div class="form-group" style="display: flex; gap: 10px;">
+                                <button type="submit" class="btn btn-success">Salvar</button>
+                                <button type="button" class="btn btn-danger" onclick="fecharModal()">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- App Supervisão -->
+            <div id="app-supervisao" class="app-content hidden">
+                <div class="section">
+                    <h2>📊 Dashboard de Supervisão</h2>
+                    
+                    <!-- Filtros -->
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label>Data Inicial</label>
+                            <input type="date" id="filtro-data-inicial">
+                        </div>
+                        <div class="input-group">
+                            <label>Data Final</label>
+                            <input type="date" id="filtro-data-final">
+                        </div>
+                        <div class="input-group">
+                            <label>Tipo</label>
+                            <select id="filtro-tipo">
+                                <option value="">Todos os tipos</option>
+                                <option value="Borracharia">Borracharia</option>
+                                <option value="Eletrica">Elétrica</option>
+                                <option value="Mecanica">Mecânica</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <button class="btn btn-primary" onclick="aplicarFiltros()">🔍 Filtrar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Métricas -->
+                <div class="dashboard-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="total-ocorrencias">0</div>
+                        <div class="metric-label">Total de Ocorrências</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="ocorrencias-pendentes">0</div>
+                        <div class="metric-label">Pendentes</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="ocorrencias-andamento">0</div>
+                        <div class="metric-label">Em Andamento</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="ocorrencias-concluidas">0</div>
+                        <div class="metric-label">Concluídas</div>
+                    </div>
+                </div>
+
+                <!-- Relatório Detalhado -->
+                <div class="section">
+                    <h2>📋 Relatório Detalhado</h2>
+                    <div id="relatorio-detalhado">
+                        <!-- Relatório será preenchido dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="login-header">
+                <h2 id="login-title">🔐 Login Técnico</h2>
+                <p id="login-subtitle">Acesse a área do técnico</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="input-group">
+                    <label for="login-usuario">Usuário</label>
+                    <input type="text" id="login-usuario" required placeholder="Digite seu usuário">
+                </div>
+                
+                <div class="input-group">
+                    <label for="login-senha">Senha</label>
+                    <input type="password" id="login-senha" required placeholder="Digite sua senha">
+                </div>
+                
+                <div class="login-buttons">
+                    <button type="button" class="btn btn-danger" onclick="cancelarLogin()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Entrar</button>
+                </div>
+            </form>
+            
+            <!-- Credenciais de demonstração -->
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 12px;">
+                <strong>👨‍🔧 Credenciais Técnico:</strong><br>
+                Usuário: <code>tecnico</code> | Senha: <code>123456</code><br><br>
+                <strong>👔 Credenciais Supervisor:</strong><br>
+                Usuário: <code>supervisor</code> | Senha: <code>admin</code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados da aplicação (simulando banco de dados)
+        let ocorrencias = [];
+        let contadorId = 1;
+        let ocorrenciaAtual = null;
+        let usuarioLogado = null;
+        let tipoLogin = null; // 'tecnico' ou 'supervisor'
+
+        // Usuários do sistema (em produção seria um banco de dados)
+        const usuarios = {
+            'tecnico': { senha: '123456', tipo: 'tecnico', nome: 'João Técnico' },
+            'supervisor': { senha: 'admin', tipo: 'supervisor', nome: 'Maria Supervisora' },
+            'admin': { senha: '123456', tipo: 'supervisor', nome: 'Administrador' }
+        };
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            preencherDadosAutomaticos();
+            obterLocalizacao();
+            configurarEventos();
+            atualizarTecnico();
+            atualizarDashboard();
+            
+            // Configurar datas padrão para filtros
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('filtro-data-inicial').value = hoje;
+            document.getElementById('filtro-data-final').value = hoje;
+        });
+
+        // Preenchimento automático de campos
+        function preencherDadosAutomaticos() {
+            const agora = new Date();
+            const dataFormatada = agora.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            document.getElementById('id-ocorrencia').value = `AT${String(contadorId).padStart(4, '0')}`;
+            document.getElementById('data-hora').value = dataFormatada;
+        }
+
+        // Geolocalização
+        function obterLocalizacao() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        document.getElementById('localizacao').value = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+                    },
+                    function(error) {
+                        document.getElementById('localizacao').value = 'Localização não disponível';
+                        console.log('Erro ao obter localização:', error);
+                    }
+                );
+            } else {
+                document.getElementById('localizacao').value = 'Geolocalização não suportada';
+            }
+        }
+
+        // Configurar eventos dos formulários
+        function configurarEventos() {
+            // Formulário do motorista
+            document.getElementById('form-motorista').addEventListener('submit', function(e) {
+                e.preventDefault();
+                enviarSolicitacao();
+            });
+
+            // Campo solicitante - apenas letras e primeira maiúscula
+            document.getElementById('solicitante').addEventListener('input', function(e) {
+                let value = e.target.value;
+                // Remove caracteres não alfabéticos
+                value = value.replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+                // Primeira letra maiúscula
+                if (value.length > 0) {
+                    value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+                }
+                e.target.value = value;
+            });
+
+            // Formulário de atendimento
+            document.getElementById('form-atendimento').addEventListener('submit', function(e) {
+                e.preventDefault();
+                salvarAtendimento();
+            });
+
+            // Formulário de login
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                realizarLogin();
+            });
+        }
+
+        // Navegação entre apps
+        function showApp(app) {
+            // Verificar se precisa de login
+            if ((app === 'tecnico' || app === 'supervisao') && !usuarioLogado) {
+                mostrarLogin(app);
+                return;
+            }
+
+            // Verificar permissões
+            if (app === 'supervisao' && usuarioLogado && usuarioLogado.tipo !== 'supervisor') {
+                alert('Acesso negado! Apenas supervisores podem acessar esta área.');
+                return;
+            }
+
+            // Esconder todos os apps
+            document.querySelectorAll('.app-content').forEach(el => el.classList.add('hidden'));
+            // Remover classe active de todas as abas
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            
+            // Mostrar app selecionado
+            document.getElementById(`app-${app}`).classList.remove('hidden');
+            // Adicionar classe active na aba
+            event.target.classList.add('active');
+
+            // Atualizar dados conforme necessário
+            if (app === 'tecnico') {
+                atualizarTecnico();
+            } else if (app === 'supervisao') {
+                atualizarDashboard();
+            }
+        }
+
+        // Mostrar modal de login
+        function mostrarLogin(tipoApp) {
+            tipoLogin = tipoApp;
+            
+            const modal = document.getElementById('login-modal');
+            const title = document.getElementById('login-title');
+            const subtitle = document.getElementById('login-subtitle');
+            
+            if (tipoApp === 'tecnico') {
+                title.textContent = '🔧 Login Técnico';
+                subtitle.textContent = 'Acesse a área do técnico';
+            } else {
+                title.textContent = '📊 Login Supervisão';
+                subtitle.textContent = 'Acesse a área de supervisão';
+            }
+            
+            modal.classList.remove('hidden');
+            document.getElementById('login-usuario').focus();
+        }
+
+        // Realizar login
+        function realizarLogin() {
+            const usuario = document.getElementById('login-usuario').value;
+            const senha = document.getElementById('login-senha').value;
+            
+            if (usuarios[usuario] && usuarios[usuario].senha === senha) {
+                // Login válido
+                if (tipoLogin === 'supervisao' && usuarios[usuario].tipo !== 'supervisor') {
+                    alert('Este usuário não tem permissão para acessar a área de supervisão.');
+                    return;
+                }
+                
+                usuarioLogado = {
+                    usuario: usuario,
+                    nome: usuarios[usuario].nome,
+                    tipo: usuarios[usuario].tipo
+                };
+                
+                // Atualizar interface
+                atualizarInterfaceLogin();
+                
+                // Fechar modal
+                cancelarLogin();
+                
+                // Mostrar app solicitado
+                showApp(tipoLogin);
+                
+            } else {
+                alert('Usuário ou senha inválidos!');
+                document.getElementById('login-senha').value = '';
+                document.getElementById('login-senha').focus();
+            }
+        }
+
+        // Cancelar login
+        function cancelarLogin() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-form').reset();
+            tipoLogin = null;
+        }
+
+        // Atualizar interface após login
+        function atualizarInterfaceLogin() {
+            const userInfo = document.getElementById('user-info');
+            const userName = document.getElementById('user-name');
+            const tabTecnico = document.getElementById('tab-tecnico');
+            const tabSupervisao = document.getElementById('tab-supervisao');
+            
+            if (usuarioLogado) {
+                // Mostrar informações do usuário
+                userName.textContent = usuarioLogado.nome;
+                userInfo.classList.add('show');
+                
+                // Liberar acessos baseado no tipo
+                if (usuarioLogado.tipo === 'tecnico') {
+                    tabTecnico.classList.remove('locked');
+                } else if (usuarioLogado.tipo === 'supervisor') {
+                    tabTecnico.classList.remove('locked');
+                    tabSupervisao.classList.remove('locked');
+                }
+            } else {
+                // Esconder informações e bloquear acesso
+                userInfo.classList.remove('show');
+                tabTecnico.classList.add('locked');
+                tabSupervisao.classList.add('locked');
+            }
+        }
+
+        // Logout
+        function logout() {
+            usuarioLogado = null;
+            atualizarInterfaceLogin();
+            
+            // Voltar para app motorista
+            document.querySelectorAll('.app-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('app-motorista').classList.remove('hidden');
+            document.querySelector('.nav-tab').classList.add('active');
+            
+            alert('Logout realizado com sucesso!');
+        }
+
+        // Enviar solicitação do motorista
+        function enviarSolicitacao() {
+            const agora = new Date();
+            const novaOcorrencia = {
+                id: document.getElementById('id-ocorrencia').value,
+                dataHora: agora.toISOString(), // Salva no formato ISO para cálculos
+                dataHoraFormatada: document.getElementById('data-hora').value, // Salva formatado para exibição
+                localizacao: document.getElementById('localizacao').value,
+                frota: document.getElementById('frota').value,
+                carreta1: document.getElementById('carreta1').value,
+                carreta2: document.getElementById('carreta2').value,
+                solicitante: document.getElementById('solicitante').value,
+                tipo: document.getElementById('tipo').value,
+                descricao: document.getElementById('descricao').value,
+                status: 'Pendente',
+                observacoesTecnico: '',
+                dataAtendimento: null
+            };
+
+            ocorrencias.push(novaOcorrencia);
+            
+            alert('Solicitação enviada com sucesso!');
+            
+            // Limpar formulário e gerar novo ID
+            document.getElementById('form-motorista').reset();
+            contadorId++;
+            preencherDadosAutomaticos();
+            obterLocalizacao();
+        }
+
+        // Atualizar lista do técnico
+        function atualizarTecnico() {
+            const lista = document.getElementById('lista-ocorrencias');
+            lista.innerHTML = '';
+
+            if (ocorrencias.length === 0) {
+                lista.innerHTML = '<p style="text-align: center; color: #6c757d;">Nenhuma ocorrência encontrada</p>';
+                return;
+            }
+
+            ocorrencias.forEach(ocorrencia => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div>
+                            <h3>${ocorrencia.id} - ${ocorrencia.tipo}</h3>
+                            <p><strong>Solicitante:</strong> ${ocorrencia.solicitante}</p>
+                            <p><strong>Frota:</strong> ${ocorrencia.frota}</p>
+                        </div>
+                        <span class="status ${ocorrencia.status.toLowerCase().replace(' ', '')}">${ocorrencia.status}</span>
+                    </div>
+                    <p><strong>Data/Hora:</strong> ${ocorrencia.dataHoraFormatada || new Date(ocorrencia.dataHora).toLocaleString('pt-BR')}</p>
+                    <p><strong>Localização:</strong> ${ocorrencia.localizacao}</p>
+                    <p><strong>Descrição:</strong> ${ocorrencia.descricao}</p>
+                    ${ocorrencia.observacoesTecnico ? `<p><strong>Observações:</strong> ${ocorrencia.observacoesTecnico}</p>` : ''}
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="abrirAtendimento('${ocorrencia.id}')">
+                            ${ocorrencia.status === 'Pendente' ? '▶️ Iniciar Atendimento' : '✏️ Editar Atendimento'}
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+        }
+
+        // Abrir modal de atendimento
+        function abrirAtendimento(id) {
+            ocorrenciaAtual = ocorrencias.find(o => o.id === id);
+            if (ocorrenciaAtual) {
+                document.getElementById('status-atendimento').value = 
+                    ocorrenciaAtual.status === 'Pendente' ? 'Em Andamento' : ocorrenciaAtual.status;
+                document.getElementById('observacoes-tecnico').value = ocorrenciaAtual.observacoesTecnico;
+                document.getElementById('modal-atendimento').classList.remove('hidden');
+            }
+        }
+
+        // Fechar modal
+        function fecharModal() {
+            document.getElementById('modal-atendimento').classList.add('hidden');
+            ocorrenciaAtual = null;
+        }
+
+        // Salvar atendimento
+        function salvarAtendimento() {
+            if (ocorrenciaAtual) {
+                ocorrenciaAtual.status = document.getElementById('status-atendimento').value;
+                ocorrenciaAtual.observacoesTecnico = document.getElementById('observacoes-tecnico').value;
+                ocorrenciaAtual.dataAtendimento = new Date().toISOString();
+                
+                alert('Atendimento salvo com sucesso!');
+                fecharModal();
+                atualizarTecnico();
+                atualizarDashboard();
+            }
+        }
+
+        // Atualizar dashboard de supervisão
+        function atualizarDashboard() {
+            const total = ocorrencias.length;
+            const pendentes = ocorrencias.filter(o => o.status === 'Pendente').length;
+            const andamento = ocorrencias.filter(o => o.status === 'Em Andamento').length;
+            const concluidas = ocorrencias.filter(o => o.status === 'Concluída').length;
+
+            document.getElementById('total-ocorrencias').textContent = total;
+            document.getElementById('ocorrencias-pendentes').textContent = pendentes;
+            document.getElementById('ocorrencias-andamento').textContent = andamento;
+            document.getElementById('ocorrencias-concluidas').textContent = concluidas;
+
+            atualizarRelatorio();
+        }
+
+        // Aplicar filtros
+        function aplicarFiltros() {
+            atualizarRelatorio();
+        }
+
+        // Atualizar relatório detalhado
+        function atualizarRelatorio() {
+            const dataInicial = document.getElementById('filtro-data-inicial').value;
+            const dataFinal = document.getElementById('filtro-data-final').value;
+            const tipoFiltro = document.getElementById('filtro-tipo').value;
+
+            let ocorrenciasFiltradas = ocorrencias;
+
+            // Filtrar por data
+            if (dataInicial || dataFinal) {
+                ocorrenciasFiltradas = ocorrenciasFiltradas.filter(o => {
+                    const dataOcorrencia = new Date(o.dataHora).toISOString().split('T')[0];
+                    if (dataInicial && dataOcorrencia < dataInicial) return false;
+                    if (dataFinal && dataOcorrencia > dataFinal) return false;
+                    return true;
+                });
+            }
+
+            // Filtrar por tipo
+            if (tipoFiltro) {
+                ocorrenciasFiltradas = ocorrenciasFiltradas.filter(o => o.tipo === tipoFiltro);
+            }
+
+            const relatorio = document.getElementById('relatorio-detalhado');
+            relatorio.innerHTML = '';
+
+            if (ocorrenciasFiltradas.length === 0) {
+                relatorio.innerHTML = '<p style="text-align: center; color: #6c757d;">Nenhuma ocorrência encontrada para os filtros selecionados</p>';
+                return;
+            }
+
+            // Agrupar por tipo
+            const porTipo = {};
+            ocorrenciasFiltradas.forEach(o => {
+                if (!porTipo[o.tipo]) porTipo[o.tipo] = [];
+                porTipo[o.tipo].push(o);
+            });
+
+            // Exibir resumo por tipo
+            const resumo = document.createElement('div');
+            resumo.innerHTML = '<h3>📈 Resumo por Tipo</h3>';
+            
+            Object.keys(porTipo).forEach(tipo => {
+                const count = porTipo[tipo].length;
+                const pendentes = porTipo[tipo].filter(o => o.status === 'Pendente').length;
+                const andamento = porTipo[tipo].filter(o => o.status === 'Em Andamento').length;
+                const concluidas = porTipo[tipo].filter(o => o.status === 'Concluída').length;
+                
+                resumo.innerHTML += `
+                    <div class="card" style="margin-bottom: 10px;">
+                        <h4>${tipo}: ${count} ocorrências</h4>
+                        <div style="display: flex; gap: 15px; margin-top: 10px;">
+                            <span class="status pendente">Pendentes: ${pendentes}</span>
+                            <span class="status andamento">Em Andamento: ${andamento}</span>
+                            <span class="status concluida">Concluídas: ${concluidas}</span>
+                        </div>
+                    </div>
+                `;
