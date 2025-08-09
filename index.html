@@ -471,6 +471,13 @@
             <h1>🔧 Sistema de Assistência Técnica</h1>
             <p>Gestão completa de ocorrências técnicas</p>
             
+            <!-- Botão de acesso ao cadastro -->
+            <div style="position: absolute; top: 20px; left: 20px;">
+                <button class="btn" onclick="acessarCadastro()" style="padding: 8px 15px; font-size: 14px; background: rgba(255,255,255,0.2);">
+                    👥 Gerenciar Usuários
+                </button>
+            </div>
+            
             <!-- Informações do usuário logado -->
             <div class="user-info" id="user-info">
                 <span id="user-name">Usuário</span>
@@ -653,13 +660,7 @@
                 </div>
             </form>
             
-            <!-- Credenciais de demonstração -->
-            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 12px;">
-                <strong>👨‍🔧 Credenciais Técnico:</strong><br>
-                Usuário: <code>tecnico</code> | Senha: <code>123456</code><br><br>
-                <strong>👔 Credenciais Supervisor:</strong><br>
-                Usuário: <code>supervisor</code> | Senha: <code>admin</code>
-            </div>
+
         </div>
     </div>
 
@@ -695,10 +696,10 @@
         let usuarioLogado = null;
         let tipoLogin = null;
 
-        // Usuários do sistema
-        const usuarios = {
-            'tecnico': { senha: '123456', tipo: 'tecnico', nome: 'João Técnico' },
-            'supervisor': { senha: 'admin', tipo: 'supervisor', nome: 'Maria Supervisora' }
+        // Usuários do sistema (carregados dinamicamente)
+        let usuarios = {
+            'admin': { senha: 'admin123', tipo: 'supervisor', nome: 'Administrador Sistema' },
+            'tecnico': { senha: '123456', tipo: 'tecnico', nome: 'Técnico Demonstração' }
         };
 
         // Inicialização
@@ -712,6 +713,7 @@
                 }, 500);
             }, 2000);
             
+            carregarUsuarios();
             preencherDadosAutomaticos();
             obterLocalizacao();
             configurarEventos();
@@ -723,6 +725,19 @@
             document.getElementById('filtro-data-inicial').value = hoje;
             document.getElementById('filtro-data-final').value = hoje;
         });
+
+        // Carregar usuários do sistema de cadastro
+        function carregarUsuarios() {
+            const usuariosCadastrados = localStorage.getItem('assist-tecnica-dados-usuarios');
+            if (usuariosCadastrados) {
+                try {
+                    const dadosUsuarios = JSON.parse(usuariosCadastrados);
+                    usuarios = { ...usuarios, ...dadosUsuarios };
+                } catch (error) {
+                    console.error('Erro ao carregar usuários:', error);
+                }
+            }
+        }
 
         // Preenchimento automático
         function preencherDadosAutomaticos() {
@@ -1163,6 +1178,14 @@
             });
             
             relatorio.appendChild(listaDetalhada);
+        }
+
+        // Acessar sistema de cadastro de usuários
+        function acessarCadastro() {
+            if (confirm('Deseja acessar o sistema de cadastro de usuários?')) {
+                // Abrir em nova aba
+                window.open('cadastro.html', '_blank');
+            }
         }
     </script>
 </body>
